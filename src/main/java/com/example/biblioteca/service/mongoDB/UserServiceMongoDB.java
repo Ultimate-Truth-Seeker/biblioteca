@@ -6,6 +6,7 @@ import com.example.biblioteca.model.UserDto;
 import com.example.biblioteca.repository.mongoDB.UserRepository;
 import com.example.biblioteca.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,6 +15,9 @@ import java.util.List;
 public class UserServiceMongoDB implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public boolean existsByUsername(String username) {
@@ -27,6 +31,7 @@ public class UserServiceMongoDB implements UserService {
 
     @Override
     public User save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -39,6 +44,7 @@ public class UserServiceMongoDB implements UserService {
     public User update(Long id, UserDto userDto) {
         if (userRepository.existsById(id)) {
             User updated = userRepository.findById(id).get();
+            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
             updated.update(userDto);
             return userRepository.save(updated);
         }

@@ -22,4 +22,11 @@ public class Loan {
     private Long userId;
     private Date loanDate;
     private Date devolutionDate;
+
+    public void update(Loan loan) {
+        setBookId(loan.getBookId());
+        setLoanDate(loan.getLoanDate());
+        setDevolutionDate(loan.getDevolutionDate());
+        setUserId(loan.getUserId());
+    }
 }

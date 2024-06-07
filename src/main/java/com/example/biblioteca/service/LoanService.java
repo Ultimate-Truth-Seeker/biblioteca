@@ -15,4 +15,11 @@ public interface LoanService {
     void remove(Long id);
 
     List<Loan> getAll();
+
+    boolean existsByBookId(Long id);
+    boolean existsByUserId(Long id);
+    Optional<Loan> findByBookId(Long id);
+    Optional<Loan> findByUserId(Long id);
+
+
 }

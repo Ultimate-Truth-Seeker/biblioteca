@@ -33,4 +33,24 @@ public class LoanServiceMongoDB implements LoanService {
     public List<Loan> getAll() {
         return loanRepository.findAll();
     }
+
+    @Override
+    public boolean existsByBookId(Long id) {
+        return loanRepository.existsByBookId(id);
+    }
+
+    @Override
+    public boolean existsByUserId(Long id) {
+        return loanRepository.existsByUserId(id);
+    }
+
+    @Override
+    public Optional<Loan> findByBookId(Long id) {
+        return loanRepository.findByBookId(id);
+    }
+
+    @Override
+    public Optional<Loan> findByUserId(Long id) {
+        return loanRepository.findByUserId(id);
+    }
 }

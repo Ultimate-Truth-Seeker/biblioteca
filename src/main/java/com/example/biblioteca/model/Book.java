@@ -22,4 +22,12 @@ public class Book {
     private String editorial;
     private String isbn;
     private boolean available;
+
+    public void update(Book book) {
+        setAuthor(book.getAuthor());
+        setAvailable(book.isAvailable());
+        setEditorial(book.getEditorial());
+        setIsbn(book.getIsbn());
+        setTitle(book.getTitle());
+    }
 }
