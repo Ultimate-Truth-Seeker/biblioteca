@@ -26,5 +26,8 @@ public class User {
     private String password;
     private boolean enabled;
 
-
+    public void update(UserDto userDto) {
+        this.username = userDto.getUsername();
+        this.password = userDto.getPassword();
+    }
 }
