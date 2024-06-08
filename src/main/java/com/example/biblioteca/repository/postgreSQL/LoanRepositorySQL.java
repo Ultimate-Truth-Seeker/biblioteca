@@ -6,8 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface LoanRepository extends JpaRepository<Loan, Long> {
+public interface LoanRepositorySQL extends JpaRepository<Loan, Long> {
     boolean existsByBookId(Long id);
     boolean existsByUserId(Long id);
     Optional<Loan> findByBookId(Long id);

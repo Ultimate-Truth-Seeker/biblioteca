@@ -2,7 +2,7 @@ package com.example.biblioteca.controller.crud;
 
 import com.example.biblioteca.exception.UserNotFoundException;
 import com.example.biblioteca.model.User;
-import com.example.biblioteca.model.UserDto;
+import com.example.biblioteca.model.dto.UpdateUserDto;
 import com.example.biblioteca.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +11,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users/")
-//@PreAuthorize("hasRole(Admin)")
 public class UserController {
     @Autowired
     private UserService userService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User createdUser  = userService.save(user);
         URI createdUserUri = URI.create("/v1/users/" + createdUser.getId());
@@ -28,12 +27,14 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<User> findById(@PathVariable("id") Long id) {
         User userOptional = userService.get(id);
         if (userOptional != null) {
@@ -44,7 +45,8 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody UserDto userdto) {
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody UpdateUserDto userdto) {
         User userOptional = userService.update(id, userdto);
         if (userOptional != null) {
             return ResponseEntity.ok(userService.get(id));
@@ -54,6 +56,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         User userOptional = userService.get(id);
         if (userOptional != null) {

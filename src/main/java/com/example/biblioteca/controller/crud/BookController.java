@@ -5,6 +5,7 @@ import com.example.biblioteca.model.Book;
 import com.example.biblioteca.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -24,6 +25,7 @@ public class BookController {
     }
     
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<Book> createbook(@RequestBody Book book) {
         Book createdbook  = bookService.save(book);
         URI createdbookUri = URI.create("/v1/books/" + createdbook.getId());
@@ -42,7 +44,18 @@ public class BookController {
         }
     }
 
+    @GetMapping("byTitle")
+    public  ResponseEntity<Book> findByTitle(@RequestParam String title) {
+        Optional<Book> bookOptional = bookService.findByTitle(title);
+        if (bookOptional.isPresent()) {
+            return ResponseEntity.ok(bookOptional.get());
+        } else {
+            throw new BookNotFoundException(title);
+        }
+    }
+
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<Book> updatebook(@PathVariable("id") Long id, @RequestBody Book book) {
         Optional<Book> bookOptional = bookService.get(id);
         if (bookOptional.isPresent()) {
@@ -54,6 +67,7 @@ public class BookController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<Void> deletebook(@PathVariable("id") Long id) {
         Optional<Book> bookOptional = bookService.get(id);
         if (bookOptional.isPresent()) {

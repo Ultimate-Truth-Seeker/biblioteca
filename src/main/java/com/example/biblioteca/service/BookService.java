@@ -15,4 +15,7 @@ public interface BookService {
     void remove(Long id);
 
     List<Book> getAll();
+
+    Optional<Book> findByIsbn(String Isbn);
+    Optional<Book> findByTitle(String title);
 }

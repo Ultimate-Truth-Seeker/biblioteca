@@ -1,8 +1,7 @@
 package com.example.biblioteca.service.mongoDB;
 
-import com.example.biblioteca.exception.UserNotFoundException;
 import com.example.biblioteca.model.User;
-import com.example.biblioteca.model.UserDto;
+import com.example.biblioteca.model.dto.UpdateUserDto;
 import com.example.biblioteca.repository.mongoDB.UserRepository;
 import com.example.biblioteca.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +40,11 @@ public class UserServiceMongoDB implements UserService {
     }
 
     @Override
-    public User update(Long id, UserDto userDto) {
+    public User update(Long id, UpdateUserDto updateUserDto) {
         if (userRepository.existsById(id)) {
             User updated = userRepository.findById(id).get();
-            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            updated.update(userDto);
+            updateUserDto.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
+            updated.update(updateUserDto);
             return userRepository.save(updated);
         }
         return null;

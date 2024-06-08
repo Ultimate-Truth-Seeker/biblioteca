@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+
 @Repository
 public interface BookRepository extends MongoRepository<Book, Long> {
     Optional<Book> findByIsbn(String Isbn);
+    Optional<Book> findByTitle(String title);
 }

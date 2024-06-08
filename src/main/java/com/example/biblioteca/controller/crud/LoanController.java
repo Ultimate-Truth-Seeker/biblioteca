@@ -5,6 +5,7 @@ import com.example.biblioteca.model.Loan;
 import com.example.biblioteca.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -17,6 +18,7 @@ public class LoanController {
     @Autowired
     private LoanService loanService;
 
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<Loan>> getAllLoans() {
         List<Loan> Loans = loanService.getAll();
@@ -24,6 +26,7 @@ public class LoanController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Loan> createLoan(@RequestBody Loan Loan) {
         Loan createdLoan  = loanService.save(Loan);
         URI createdLoanUri = URI.create("/v1/Loans/" + createdLoan.getId());
@@ -33,6 +36,7 @@ public class LoanController {
 
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Loan> findById(@PathVariable("id") Long id) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {
@@ -43,6 +47,7 @@ public class LoanController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Loan> updateLoan(@PathVariable("id") Long id, @RequestBody Loan Loan) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {
@@ -54,6 +59,7 @@ public class LoanController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteLoan(@PathVariable("id") Long id) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {

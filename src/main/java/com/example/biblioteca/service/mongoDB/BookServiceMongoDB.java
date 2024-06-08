@@ -11,8 +11,12 @@ import java.util.Optional;
 
 @Component
 public class BookServiceMongoDB implements BookService {
-    @Autowired
-    private BookRepository bookRepository;
+
+    private final BookRepository bookRepository;
+
+    public BookServiceMongoDB(@Autowired BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
     @Override
     public Book save(Book book) {
@@ -32,5 +36,15 @@ public class BookServiceMongoDB implements BookService {
     @Override
     public List<Book> getAll() {
         return bookRepository.findAll();
+    }
+
+    @Override
+    public Optional<Book> findByIsbn(String Isbn) {
+        return bookRepository.findByIsbn(Isbn);
+    }
+
+    @Override
+    public Optional<Book> findByTitle(String title) {
+        return bookRepository.findByTitle(title);
     }
 }
