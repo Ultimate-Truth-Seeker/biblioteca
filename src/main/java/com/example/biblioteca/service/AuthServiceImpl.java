@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         if (userService.existsByEmail(signUpRequestDto.getEmail())) {
             throw new UserAlreadyExistsException("Registration Failed: Provided email already exists. Try sign in or provide another email.");
         }
-        if (userService.existsByUsername(signUpRequestDto.getUserName())) {
+        if (userService.existsByUsername(signUpRequestDto.getUsername())) {
             throw new UserAlreadyExistsException("Registration Failed: Provided username already exists. Try sign in or provide another username.");
         }
 
@@ -97,10 +97,11 @@ public class AuthServiceImpl implements AuthService {
     private User createUser(SignUpRequestDto signUpRequestDto) throws RoleNotFoundException {
         return User.builder()
                 .email(signUpRequestDto.getEmail())
-                .username(signUpRequestDto.getUserName())
+                .username(signUpRequestDto.getUsername())
                 .password(signUpRequestDto.getPassword())
                 .enabled(true)
                 .Role(determineRoles(signUpRequestDto.getRoles()))
+                .reservedBookId(null)
                 .build();
     }
 

@@ -22,15 +22,15 @@ import java.util.Set;
 @Builder
 public class User {
     @Id
-    @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String username;
     private String email;
     private String password;
     private boolean enabled;
 
     private Role Role;
+    private String reservedBookId;
 
     public void update(UpdateUserDto updateUserDto) {
         this.username = updateUserDto.getUsername();

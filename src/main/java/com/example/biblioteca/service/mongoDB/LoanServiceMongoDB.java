@@ -20,12 +20,12 @@ public class LoanServiceMongoDB implements LoanService {
     }
 
     @Override
-    public Optional<Loan> get(Long id) {
+    public Optional<Loan> get(String id) {
         return loanRepository.findById(id);
     }
 
     @Override
-    public void remove(Long id) {
+    public void remove(String id) {
         loanRepository.deleteById(id);
     }
 
@@ -35,22 +35,22 @@ public class LoanServiceMongoDB implements LoanService {
     }
 
     @Override
-    public boolean existsByBookId(Long id) {
+    public boolean existsByBookId(String id) {
         return loanRepository.existsByBookId(id);
     }
 
     @Override
-    public boolean existsByUserId(Long id) {
+    public boolean existsByUserId(String id) {
         return loanRepository.existsByUserId(id);
     }
 
     @Override
-    public Optional<Loan> findByBookId(Long id) {
+    public Optional<Loan> findByBookId(String id) {
         return loanRepository.findByBookId(id);
     }
 
     @Override
-    public Optional<Loan> findByUserId(Long id) {
+    public Optional<Loan> findByUserId(String id) {
         return loanRepository.findByUserId(id);
     }
 }

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface LoanRepository extends MongoRepository<Loan, Long> {
-    boolean existsByBookId(Long id);
-    boolean existsByUserId(Long id);
-    Optional<Loan> findByBookId(Long id);
-    Optional<Loan> findByUserId(Long id);
+public interface LoanRepository extends MongoRepository<Loan, String> {
+    boolean existsByBookId(String id);
+    boolean existsByUserId(String id);
+    Optional<Loan> findByBookId(String id);
+    Optional<Loan> findByUserId(String id);
 }

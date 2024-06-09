@@ -35,12 +35,12 @@ public class UserServiceMongoDB implements UserService {
     }
 
     @Override
-    public User get(Long id) {
+    public User get(String id) {
         return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public User update(Long id, UpdateUserDto updateUserDto) {
+    public User update(String id, UpdateUserDto updateUserDto) {
         if (userRepository.existsById(id)) {
             User updated = userRepository.findById(id).get();
             updateUserDto.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
@@ -51,7 +51,7 @@ public class UserServiceMongoDB implements UserService {
     }
 
     @Override
-    public void remove(Long id) {
+    public void remove(String id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
         }

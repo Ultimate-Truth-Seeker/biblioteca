@@ -14,11 +14,11 @@ public interface UserService {
 
     User save(User user);
 
-    User get(Long id);
+    User get(String id);
 
-    User update(Long id, UpdateUserDto updateUserDto);
+    User update(String id, UpdateUserDto updateUserDto);
 
-    void remove(Long id);
+    void remove(String id);
 
     List<User> getAll();
 }

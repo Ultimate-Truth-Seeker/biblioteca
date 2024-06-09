@@ -1,22 +1,42 @@
 package com.example.biblioteca.service.mongoDB;
 
+import com.example.biblioteca.exception.UserNotFoundException;
 import com.example.biblioteca.model.Book;
+import com.example.biblioteca.model.Loan;
+import com.example.biblioteca.model.User;
 import com.example.biblioteca.repository.mongoDB.BookRepository;
+import com.example.biblioteca.repository.mongoDB.UserRepository;
+import com.example.biblioteca.security.jwt.JwtRequestFilter;
+import com.example.biblioteca.security.jwt.JwtUtils;
 import com.example.biblioteca.service.BookService;
+import com.example.biblioteca.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class BookServiceMongoDB implements BookService {
 
-    private final BookRepository bookRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
-    public BookServiceMongoDB(@Autowired BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }
+    @Autowired
+    private LoanService loanService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    @Value("${app.loanDuration}")
+    private int loanDuration;
+
 
     @Override
     public Book save(Book book) {
@@ -24,12 +44,12 @@ public class BookServiceMongoDB implements BookService {
     }
 
     @Override
-    public Optional<Book> get(Long id) {
+    public Optional<Book> get(String id) {
         return bookRepository.findById(id);
     }
 
     @Override
-    public void remove(Long id) {
+    public void remove(String id) {
         bookRepository.deleteById(id);
     }
 
@@ -46,5 +66,65 @@ public class BookServiceMongoDB implements BookService {
     @Override
     public Optional<Book> findByTitle(String title) {
         return bookRepository.findByTitle(title);
+    }
+
+    @Override
+    public Optional<Loan> tryLoan(String id, String Authorization) {
+        if (get(id).isPresent()) {
+            if (get(id).get().isAvailable()) {
+                Book updated = get(id).get();
+                updated.setAvailable(false);
+                bookRepository.save(updated);
+                Loan loan =
+                        Loan.builder().bookId(id).userId(getUserDetails(Authorization).getId()).loanDate(new Date())
+                        .devolutionDate(new Date(new Date().getTime() + loanDuration)).build();
+                loanService.save(loan);
+                if (getUserDetails(Authorization).getReservedBookId() != null) {
+                    User user = getUserDetails(Authorization);
+                    if (user.getReservedBookId().equals(id)) {
+                        user.setReservedBookId(null);
+                        userRepository.save(user);
+                    }
+                }
+                return Optional.of(loan);
+            }
+            return Optional.empty();
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean tryReserve(String id, String Authorization) {
+        if (get(id).isPresent()) {
+            if (!get(id).get().isAvailable()) {
+                User user = getUserDetails(Authorization);
+                user.setReservedBookId(id);
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private User getUserDetails(String Authorization) {
+        if (Authorization != null && jwtUtils.validateJwtToken(Authorization)) {
+            String username = jwtUtils.getUserNameFromJwtToken(Authorization);
+            return userRepository.findByEmail(username).get();
+            }
+        return null;
+    }
+
+    @Scheduled(fixedRate = 30000)
+    public void update() {
+        Date date = new Date();
+        for (Loan loan : loanService.getAll()) {
+            if (loan.getDevolutionDate().before(date)) {
+                Book book = bookRepository.findById(loan.getBookId()).get();
+                book.setAvailable(true);
+                bookRepository.save(book);
+                loanService.remove(loan.getId());
+            }
+        }
     }
 }

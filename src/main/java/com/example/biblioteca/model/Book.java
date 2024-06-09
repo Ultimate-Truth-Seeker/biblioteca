@@ -1,6 +1,8 @@
 package com.example.biblioteca.model;
 
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +17,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 public class Book {
     @Id
-    @jakarta.persistence.Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
     private String title;
     private String author;
     private String editorial;

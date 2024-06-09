@@ -26,7 +26,7 @@ public class LoanController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<Loan> createLoan(@RequestBody Loan Loan) {
         Loan createdLoan  = loanService.save(Loan);
         URI createdLoanUri = URI.create("/v1/Loans/" + createdLoan.getId());
@@ -37,7 +37,7 @@ public class LoanController {
 
     @GetMapping("{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Loan> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<Loan> findById(@PathVariable("id") String id) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {
             return ResponseEntity.ok(LoanOptional.get());
@@ -47,20 +47,20 @@ public class LoanController {
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Loan> updateLoan(@PathVariable("id") Long id, @RequestBody Loan Loan) {
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
+    public ResponseEntity<Loan> updateLoan(@PathVariable("id") String id, @RequestBody Loan Loan) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {
             LoanOptional.get().update(Loan);
-            return ResponseEntity.ok(loanService.get(id).get());
+            return ResponseEntity.ok(loanService.save(LoanOptional.get()));
         } else {
             throw new LoanNotFoundException(id.toString());
         }
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteLoan(@PathVariable("id") Long id) {
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
+    public ResponseEntity<Void> deleteLoan(@PathVariable("id") String id) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {
             loanService.remove(id);

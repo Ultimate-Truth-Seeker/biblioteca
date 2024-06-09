@@ -10,16 +10,16 @@ import java.util.Optional;
 public interface LoanService {
     Loan save(Loan loan);
 
-    Optional<Loan> get(Long id);
+    Optional<Loan> get(String id);
 
-    void remove(Long id);
+    void remove(String id);
 
     List<Loan> getAll();
 
-    boolean existsByBookId(Long id);
-    boolean existsByUserId(Long id);
-    Optional<Loan> findByBookId(Long id);
-    Optional<Loan> findByUserId(Long id);
+    boolean existsByBookId(String id);
+    boolean existsByUserId(String id);
+    Optional<Loan> findByBookId(String id);
+    Optional<Loan> findByUserId(String id);
 
 
 }

@@ -17,7 +17,7 @@ public class SignUpRequestDto {
     @NotBlank(message = "Username is required!")
     @Size(min= 3, message = "Username must have atleast 3 characters!")
     @Size(max= 20, message = "Username can have have atmost 20 characters!")
-    private String userName;
+    private String username;
 
     @Email(message = "Email is not in valid format!")
     @NotBlank(message = "Email is required!")
@@ -31,8 +31,8 @@ public class SignUpRequestDto {
     private Set<String> roles;
 
 
-    public SignUpRequestDto(String userName, String email, String password) {
-        this.userName = userName;
+    public SignUpRequestDto(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.roles = null;

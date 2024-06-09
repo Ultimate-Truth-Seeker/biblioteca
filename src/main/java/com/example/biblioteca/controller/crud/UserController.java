@@ -35,7 +35,7 @@ public class UserController {
 
     @GetMapping("{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<User> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<User> findById(@PathVariable("id") String id) {
         User userOptional = userService.get(id);
         if (userOptional != null) {
             return ResponseEntity.ok(userOptional);
@@ -46,7 +46,7 @@ public class UserController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody UpdateUserDto userdto) {
+    public ResponseEntity<User> updateUser(@PathVariable("id") String id, @RequestBody UpdateUserDto userdto) {
         User userOptional = userService.update(id, userdto);
         if (userOptional != null) {
             return ResponseEntity.ok(userService.get(id));
@@ -57,7 +57,7 @@ public class UserController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
         User userOptional = userService.get(id);
         if (userOptional != null) {
             userService.remove(id);
