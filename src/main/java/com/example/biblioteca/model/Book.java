@@ -23,6 +23,7 @@ public class Book {
     private String author;
     private String editorial;
     private String isbn;
+    private String reservingUserId;
     private boolean available;
 
     public void update(Book book) {

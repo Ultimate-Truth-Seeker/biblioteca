@@ -72,8 +72,14 @@ public class BookServiceMongoDB implements BookService {
     public Optional<Loan> tryLoan(String id, String Authorization) {
         if (get(id).isPresent()) {
             if (get(id).get().isAvailable()) {
+                if (get(id).get().getReservingUserId() != null) {
+                    if (!get(id).get().getReservingUserId().equals(getUserDetails(Authorization).getId())) {
+                        return Optional.empty();
+                    }
+                }
                 Book updated = get(id).get();
                 updated.setAvailable(false);
+                updated.setReservingUserId(null);
                 bookRepository.save(updated);
                 Loan loan =
                         Loan.builder().bookId(id).userId(getUserDetails(Authorization).getId()).loanDate(new Date())
@@ -96,10 +102,18 @@ public class BookServiceMongoDB implements BookService {
     @Override
     public boolean tryReserve(String id, String Authorization) {
         if (get(id).isPresent()) {
-            if (!get(id).get().isAvailable()) {
+            if (!get(id).get().isAvailable() && get(id).get().getReservingUserId() == null) {
                 User user = getUserDetails(Authorization);
+                if (user.getReservedBookId() != null) {
+                    Book previous = get(user.getReservedBookId()).get();
+                    previous.setReservingUserId(null);
+                    bookRepository.save(previous);
+                }
                 user.setReservedBookId(id);
                 userRepository.save(user);
+                Book book = get(id).get();
+                book.setReservingUserId(user.getId());
+                bookRepository.save(book);
                 return true;
             }
         }
