@@ -1,8 +1,7 @@
 package com.example.biblioteca.model;
 
 import com.example.biblioteca.model.dto.UpdateUserDto;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,22 +17,27 @@ import java.util.Set;
 @NoArgsConstructor
 
 @Document(collection = "users")
-
+@Entity
+@Table(name = "users")
 @Builder
 public class User {
     @Id
+    @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Integer id;
+
     private String username;
     private String email;
     private String password;
     private boolean enabled;
 
-    private Role Role;
-    private String reservedBookId;
+    private String Role;
+    private Integer reservedBookId;
 
     public void update(UpdateUserDto updateUserDto) {
         this.username = updateUserDto.getUsername();
         this.password = updateUserDto.getPassword();
     }
+
+
 }

@@ -11,15 +11,15 @@ import java.util.Optional;
 public interface BookService {
     Book save(Book book);
 
-    Optional<Book> get(String id);
+    Optional<Book> get(Integer id);
 
-    void remove(String id);
+    void remove(Integer id);
 
     List<Book> getAll();
 
     Optional<Book> findByIsbn(String Isbn);
     Optional<Book> findByTitle(String title);
 
-    Optional<Loan> tryLoan(String id, String Authorization);
-    boolean tryReserve(String id, String Authorization);
+    Optional<Loan> tryLoan(Integer id, String Authorization);
+    boolean tryReserve(Integer id, String Authorization);
 }

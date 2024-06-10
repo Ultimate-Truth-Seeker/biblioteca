@@ -15,8 +15,10 @@ import com.example.biblioteca.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +43,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 @SpringBootTest
 public class UserControllerTest {
     final String BASE_URL = "/users/";
-    @MockBean
+
+    @MockBean(name = "sqluser")
     private UserService usersService;
 
     @MockBean
@@ -64,8 +67,8 @@ public class UserControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = standaloneSetup(controller).build();
-        User user = new User("1", "Ada",  "ada@mail.com", "12345678",true, new Role(ERole.ROLE_SUPER_ADMIN), null);
-        when(usersService.get("1")).thenReturn(user);
+        User user = new User(1, "Ada",  "ada@mail.com", "12345678",true, ERole.ROLE_SUPER_ADMIN.name(), null);
+        when(usersService.get(1)).thenReturn(user);
         when(userDetailsService.loadUserByUsername(any())).thenReturn(UserDetailsImpl.build(user));
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         UsernamePasswordAuthenticationToken authentication =
@@ -78,20 +81,20 @@ public class UserControllerTest {
 
     @Test
     public void testFindByIdExistingUser() throws Exception {
-        User user = new User("2", "Ada",  "ada@mail.com", "12345678",true, new Role(ERole.ROLE_SUPER_ADMIN), null);
-        when(usersService.get("2")).thenReturn(user);
+        User user = new User(2, "Ada",  "ada@mail.com", "12345678",true, ERole.ROLE_SUPER_ADMIN.name(), null);
+        when(usersService.get(2)).thenReturn(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "2" ).header("Authorization", "Bearer "))
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + 2 ).header("Authorization", "Bearer "))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is("2")))
+                .andExpect(jsonPath("$.id", is(2)))
                 .andExpect(jsonPath("$.username", is("Ada")));
 
-        verify(usersService, times(1)).get("2");
+        verify(usersService, times(1)).get(2);
     }
 
     @Test
     public void testFindByIdNotExistingUser() throws Exception {
-        String id = "511";
+        int id = 511;
         when(usersService.get(id)).thenReturn(null);
 
 
@@ -111,7 +114,7 @@ public class UserControllerTest {
 
         when(usersService.save(any())).thenReturn(user);
 
-        String json = "{\"id\":\"1\",\"name\":\"Ada\",\"lastName\":\"Lovelace\"}";
+        String json = "{\"username\":\"Ada\",\"password\":\"Lovelace\"}";
 
         mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,12 +127,12 @@ public class UserControllerTest {
     @Test
     public void testUpdateExistingUser() throws Exception {
         UpdateUserDto userDto = new UpdateUserDto( "Ada", "123456789");
-        User user = new User("2", "Ada", "ada@mail.com", "123456789", true, null, null);
+        User user = new User(2, "Ada", "ada@mail.com", "123456789", true, null, null);
 
         when(usersService.update(user.getId(), userDto)).thenReturn(user);
 
         String json = "{\"username\":\"Ada\",\"password\":\"123456789\"}";
-        mockMvc.perform(put(BASE_URL + "2")
+        mockMvc.perform(put(BASE_URL + 2)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk());
@@ -139,9 +142,9 @@ public class UserControllerTest {
 
     @Test
     public void testUpdateNotExistingUser() throws Exception {
-        String id = "1";
+        int id = 1;
         when(usersService.get(id)).thenReturn(null);
-        String json = "{\"id\":\"1\",\"name\":\"Ada\",\"lastName\":\"Lovelace\"}";
+        String json = "{\"id\":1,\"name\":\"Ada\",\"lastName\":\"Lovelace\"}";
         mockMvc.perform(put(BASE_URL + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -154,21 +157,21 @@ public class UserControllerTest {
 
     @Test
     public void testDeleteExistingUser() throws Exception {
-        User user= new User("1","Ada", "ada@mail.com", "123456789", true, null,null);
-        when(usersService.get("1")).thenReturn(user);
+        User user= new User(2,"Ada", "ada@mail.com", "123456789", true, null,null);
+        when(usersService.get(2)).thenReturn(user);
 
-        String json = "{\"id\":\"1\",\"name\":\"Ada\",\"lastName\":\"Lovelace\"}";
-        mockMvc.perform(delete(BASE_URL + "1")
+        String json = "{\"id\":1,\"name\":\"Ada\",\"lastName\":\"Lovelace\"}";
+        mockMvc.perform(delete(BASE_URL + 2)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk());
 
-        verify(usersService, times(1)).remove("1");
+        verify(usersService, times(1)).remove(2);
     }
 
     @Test
     public void testDeleteNotExistingUser() throws Exception {
-        String id = "1";
+        int id = 3;
         when(usersService.get(id)).thenReturn(null);
 
         mockMvc.perform(delete(BASE_URL + id))

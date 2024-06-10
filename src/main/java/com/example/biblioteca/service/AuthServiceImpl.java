@@ -105,12 +105,12 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    private Role determineRoles(Set<String> strRoles) throws RoleNotFoundException {
+    private String determineRoles(Set<String> strRoles) throws RoleNotFoundException {
 
         if (strRoles == null) {
-            return roleFactory.getInstance("user");
+            return roleFactory.getInstance("user").getName().name();
         } else {
-            return roleFactory.getInstance(strRoles.stream().findFirst().get());
+            return roleFactory.getInstance(strRoles.stream().findFirst().get()).getName().name();
 
         }
     }

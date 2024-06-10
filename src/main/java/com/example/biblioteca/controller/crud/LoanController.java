@@ -37,7 +37,7 @@ public class LoanController {
 
     @GetMapping("{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Loan> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Loan> findById(@PathVariable("id") Integer id) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {
             return ResponseEntity.ok(LoanOptional.get());
@@ -48,7 +48,7 @@ public class LoanController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<Loan> updateLoan(@PathVariable("id") String id, @RequestBody Loan Loan) {
+    public ResponseEntity<Loan> updateLoan(@PathVariable("id") Integer id, @RequestBody Loan Loan) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {
             LoanOptional.get().update(Loan);
@@ -60,7 +60,7 @@ public class LoanController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<Void> deleteLoan(@PathVariable("id") String id) {
+    public ResponseEntity<Void> deleteLoan(@PathVariable("id") Integer id) {
         Optional<Loan> LoanOptional = loanService.get(id);
         if (LoanOptional.isPresent()) {
             loanService.remove(id);

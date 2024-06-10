@@ -1,7 +1,8 @@
-package com.example.biblioteca.service.mongoDB;
+package com.example.biblioteca.service.postgreSQL;
 
 import com.example.biblioteca.model.Loan;
 import com.example.biblioteca.repository.mongoDB.LoanRepository;
+import com.example.biblioteca.repository.postgreSQL.LoanRepositorysql;
 import com.example.biblioteca.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,16 +10,13 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
-@Component("mongoloan")
-public class LoanServiceMongoDB implements LoanService {
+@Component("sqlloan")
+public class LoanServicePostgreSQL implements LoanService {
     @Autowired
-    private LoanRepository loanRepository;
+    private LoanRepositorysql loanRepository;
 
     @Override
     public Loan save(Loan loan) {
-        if (loan.getId() == null) {
-            loan.setId(loanRepository.findAll().size() + 1);
-        }
         return loanRepository.save(loan);
     }
 

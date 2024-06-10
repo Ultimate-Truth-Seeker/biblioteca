@@ -38,7 +38,7 @@ public class BookController {
     
 
     @GetMapping("{id}")
-    public ResponseEntity<Book> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Book> findById(@PathVariable("id") Integer id) {
         Optional<Book> bookOptional = bookService.get(id);
         if (bookOptional.isPresent()) {
             return ResponseEntity.ok(bookOptional.get());
@@ -48,7 +48,7 @@ public class BookController {
     }
 
     @PostMapping("{id}")
-    public ResponseEntity<ApiResponseDto<Object>> attemptLoan(@PathVariable String id, @RequestHeader String Authorization) throws Exception {
+    public ResponseEntity<ApiResponseDto<Object>> attemptLoan(@PathVariable Integer id, @RequestHeader String Authorization) throws Exception {
 
         Optional<Loan> success =  bookService.tryLoan(id, Authorization.substring(7));
         if (success.isPresent()) {
@@ -64,7 +64,7 @@ public class BookController {
     }
 
     @PutMapping("r/{id}")
-    public ResponseEntity<ApiResponseDto<Object>> attemptReserve(@PathVariable String id, @RequestHeader String Authorization) throws Exception {
+    public ResponseEntity<ApiResponseDto<Object>> attemptReserve(@PathVariable Integer id, @RequestHeader String Authorization) throws Exception {
 
         boolean success = bookService.tryReserve(id, Authorization.substring(7));
         if (success) {
@@ -91,7 +91,7 @@ public class BookController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<Book> updatebook(@PathVariable("id") String id, @RequestBody Book book) {
+    public ResponseEntity<Book> updatebook(@PathVariable("id") Integer id, @RequestBody Book book) {
         Optional<Book> bookOptional = bookService.get(id);
         if (bookOptional.isPresent()) {
             bookOptional.get().update(book);
@@ -103,7 +103,7 @@ public class BookController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deletebook(@PathVariable("id") String id) {
+    public ResponseEntity<Void> deletebook(@PathVariable("id") Integer id) {
         Optional<Book> bookOptional = bookService.get(id);
         if (bookOptional.isPresent()) {
             bookService.remove(id);

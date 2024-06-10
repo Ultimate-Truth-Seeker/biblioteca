@@ -1,8 +1,10 @@
-package com.example.biblioteca.service.mongoDB;
+package com.example.biblioteca.service.postgreSQL;
+
 
 import com.example.biblioteca.model.User;
 import com.example.biblioteca.model.dto.UpdateUserDto;
 import com.example.biblioteca.repository.mongoDB.UserRepository;
+import com.example.biblioteca.repository.postgreSQL.UserRepositorysql;
 import com.example.biblioteca.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,10 +13,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
-@Component("mongouser")
-public class UserServiceMongoDB implements UserService {
+@Component("sqluser")
+public class UserServicePostgreSQL implements UserService {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositorysql userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -32,9 +34,6 @@ public class UserServiceMongoDB implements UserService {
     @Override
     public User save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (user.getId() == null) {
-            user.setId(userRepository.findAll().size() + 1);
-        }
         return userRepository.save(user);
     }
 

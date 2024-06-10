@@ -5,6 +5,7 @@ import com.example.biblioteca.model.dto.UpdateUserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface UserService {
@@ -14,11 +15,13 @@ public interface UserService {
 
     User save(User user);
 
-    User get(String id);
+    User get(Integer id);
 
-    User update(String id, UpdateUserDto updateUserDto);
+    User update(Integer id, UpdateUserDto updateUserDto);
 
-    void remove(String id);
+    void remove(Integer id);
 
     List<User> getAll();
+
+    Optional<User> findByEmail(String email);
 }

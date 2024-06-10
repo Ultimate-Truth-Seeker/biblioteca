@@ -1,8 +1,6 @@
 package com.example.biblioteca.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,13 +13,16 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "loans")
+@Entity
+@Table(name = "loans")
 @Builder
 public class Loan {
     @org.springframework.data.annotation.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-    private String bookId;
-    private String userId;
+    private Integer id;
+    private Integer bookId;
+    private Integer userId;
     private Date loanDate;
     private Date devolutionDate;
 
